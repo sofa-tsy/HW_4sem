@@ -1,0 +1,89 @@
+CREATE TABLE books(
+    id INT,
+    author TEXT,
+    title TEXT,
+    publish_year INT
+);
+
+INSERT INTO books
+VALUES 
+    (1, 'Достоевский', 'Преступление и наказание', 1866),
+    (2, 'Тургенев','Муму',1854),
+    (3, 'Чехов','Тоска',1886),
+    (4,'Пушкин','Капитанская дочка', 1836),
+    (5, 'Лермонтов','Мцыри',1840);
+    
+CREATE TABLE readers(
+    id INT,
+    name TEXT
+);
+
+INSERT INTO readers
+VALUES
+    (1, 'Sofa'),
+    (2, 'Larisa'),
+    (3, 'Lena'),
+    (4, 'Kate'),
+    (5, 'Vika');
+    
+
+CREATE TABLE records(
+    readers_id INT,
+    book_id INT,
+    taking_date DATA,
+    returning_date DATA
+);
+
+
+INSERT INTO records
+VALUES 
+    (1, 4, '2020-07-23', '2023-08-04'),
+    (2, 2, '2021-06-06', '2023-10-11'),
+    (3, 5, '2021-02-20', '2023-12-03'),
+    (4, 1, '2022-09-31', '2023-03-14'),
+    (5, 3, '2022-01-17', '2023-06-19');
+
+INSERT INTO records
+VALUES 
+    (1, 3, '2020-02-02', '2021-11-23'),
+    (5, 1, '2021-04-12', '2022-01-10');
+
+
+SELECT id, book_id
+FROM books
+INNER JOIN records
+    ON books.id = records.book_id;
+    
+
+SELECT id, readers_id
+FROM readers
+INNER JOIN records
+    ON readers.id = records.readers_id;
+    
+/*возвращает id и название книг, находящихся на руках у читателей*/
+
+SELECT id, title 
+FROM books JOIN records ON books.id = records.book_id 
+WHERE records.returning_date > '2023-04-27';
+
+/*возвращает имена читателей и книг, которые они когда либо брали*/
+
+SELECT books.title AS 'Title', readers.name AS 'Name'
+FROM records 
+JOIN readers ON readers.id = records.readers_id
+JOIN books ON records.book_id = books.id
+WHERE records.taking_date <= '2023-04-27';
+
+INSERT INTO books
+VALUES
+    ('Достоевский','Идиот', 1868, 6);
+
+/*возвращается количесвто книг для каждого автора*/
+
+SELECT author, count(author) 
+FROM books
+GROUP BY author;
+
+SELECT *
+FROM records
+FULL OUTER JOIN readers ON readers.id = records.readers_id;
